@@ -1,0 +1,20 @@
+"""
+Day 22 Activity: Interaction Features
+Tasks:
+1) Load interaction dataset
+2) Create multiplicative, additive, and logical interactions
+3) Compute correlations with target
+"""
+
+import pandas as pd
+
+# TODO: Load data from data/day22_interactions.csv
+df = pd.read_csv("python/day22_interactions.csv")
+
+# TODO: Create interaction features
+df["inter_mult"]=df["feature1"]*df["feature2"]
+df["inter_add"]=df["feature1"]+df["feature2"]
+df["inter_logical"]=((df["feature1"])>1.5) & (df["feature2"]>2)
+# TODO: Compute correlations with target
+correlations = df.corr()
+print("CCorrelations with target:",correlations["target"])
