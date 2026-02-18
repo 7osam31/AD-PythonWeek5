@@ -1,0 +1,22 @@
+"""
+Day 21 Activity: Domain-Driven Features
+Tasks:
+1) Load housing data
+2) Create price_per_sqft safely
+3) Propose at least two additional domain features
+4) Compare basic model behavior (or summaries) with/without domain features
+"""
+
+import pandas as pd
+import numpy as np
+
+# TODO: Load data from data/day21_housing.csv
+df = pd.read_csv("python/day21_housing.csv")
+dfcop=df.copy()
+# TODO: Create price_per_sqft with safe division
+df["price_sqft"]=df["price"]/(df["sqft"]) 
+# TODO: Create additional domain features
+df["sqft_per_bedroom"]=df["sqft"]/df["bedrooms"]
+# TODO: Print summary or model comparison
+print("Original data description:\n", dfcop.describe())
+print("Data with domain features description:\n", df.describe())
