@@ -1,0 +1,45 @@
+"""""
+Day 25 Activity: Mini-Project (Feature Engineering)
+Tasks:
+1) Load dataset
+2) Apply domain features, interactions, and transformations
+3) Apply feature selection
+4) Save engineered dataset
+"""
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.feature_selection import VarianceThreshold
+
+# TODO: Load data from data/day25_project.csv
+df = pd.read_csv("C:\\Users\\acer57\\OneDrive\\Desktop\\my web\\python\\day25_project.csv")
+df_features = df.copy()
+# TODO: Build engineered feature set
+df_features = df.copy()
+df_features["price_per_sqft"] = df["price"] / df["sqft"].replace({0: np.nan})
+df_features["price_per_sqft"] = df_features["price_per_sqft"].fillna(df_features["price_per_sqft"].median())
+df_features["revenue_per_user"] = df["revenue"] / df["num_users"].replace({0: np.nan})
+
+df_features["f1_x_f2"] = df_features["feature1"] * df_features["feature2"]
+df_features["high_risk"] = ((df_features["age"] > 60) & (df_features["is_smoker"] == 1)).astype(int)
+
+poly = PolynomialFeatures(degree=2, include_bias=False)
+X_poly = poly.fit_transform(df_features[["age", "price_per_sqft"]])
+
+
+var_selector = VarianceThreshold(threshold=0.01)
+X_train_var = var_selector.fit_transform(df_features.drop(columns=["target"]))
+
+def drop_correlated(df,threshold=0.9):
+    corr_matrix=df.corr().abs()
+    upper=corr_matrix.where(np.triu(np.ones(corr_matrix.shape),k=1).astype(bool))
+    to_drop =[col for col in upper.columns if any(upper[col]>threshold)]
+    return df.drop(columns=to_drop)
+
+
+X_train_reduced, dropped = drop_correlated(df_features, threshold=0.95)
+
+
+# TODO: Save engineered dataset to data/day25_engineered.csv
+df_features.to_csv("C:\\Users\\acer57\\OneDrive\\Desktop\\my web\\python\\day25_engineered.csv", index=False)
